@@ -58,7 +58,7 @@ For the draft reply:
 If the customer’s message is unclear, say so and ask clarifying questions in the draft reply. ```
 
 ```
-
+![instructions](<Screenshot 2026-07-13 at 9.55.42 PM.png>)
 1. Save the agent.
 4. Configuration (.env)
 Create a .env file in the root of your project directory and configure the environment variables as follows:
@@ -78,3 +78,50 @@ Create a .env file in the root of your project directory and configure the envir
 Running the Project
 Run the agent script directly using uv. This command handles virtual environment activation and dependency management seamlessly in one step:
 `uv run support-agent.py`
+
+So far we build an agent in microsoft foundry and called same agent from python code.
+
+Tool calling in microsoft foundry:
+In simple words, an agent without tools is just a smart assistant, but an agent with tools becomes a system.
+Tool calling is what allows an AI agent to do things, not just say things.
+
+So Tool calling is:
+Tool calling allows an AI agent to:
+1. Decide when it needs external data or capabilities
+2. Select the right tool
+3. Pass structured inputs to that tool
+4. Receive structured outputs back
+
+From the agent's perspective, tools are simply capabilities it can invoke when the task requires it.
+
+Now click on add to add a tool and select File search and provide a name to it and upload a 2026 toyota-rav4.pdf file and save it. This is also a kind of RAG Implementation.
+![tools](<Screenshot 2026-07-13 at 9.55.58 PM.png>) 
+![tools](<Screenshot 2026-07-13 at 9.57.12 PM.png>) 
+![tools](<Screenshot 2026-07-13 at 9.57.34 PM.png>)
+Here is the PDF to download and use it. Check assets folder for PDF.
+
+After upload, what RAG does in background..
+1. Preparation done
+  1.1 Split documents into small chunks
+  1.2 Convert each chunk -> Embedding(numeral vector)
+  1.3 Save embeddings in vector store(fast semantic search)
+2. When user asks a question -> RAG in action
+  2.1 Convert question -> embedding
+  2.2 Search vector store -> find most relevant chunks
+  2.3 Give those chunks to the LLM as extra context
+
+So, the model no longer guesses - it answers using the actual relevant parts of your documents/manual.
+
+RAG = external knowledge + LLM reasoning = more accurate, up-to-date, source-grounded answers.
+
+Note: Read the instructions now to understand what inputs we provided to system on user inputs, verify RAG(file data) etc.
+
+How to Use RAG (File Search) & Citations
+The agent is equipped with Retrieval-Augmented Generation (RAG) capabilities, allowing it to search uploaded reference documents (such as manuals or FAQs) to answer specific user queries.
+Example Interaction
+If you ask the agent a document-specific question:
+User: "When does the maintenance required reminder turn on, and how do I reset it?"
+The agent will automatically trigger its file search tool, scan the uploaded documents, and generate a response based on that context.
+At the end of the generated answer, the agent will list the specific source citations (e.g., PDF page numbers or document names) where it found the supporting information:
+![generated-content](<Screenshot 2026-07-13 at 10.15.16 PM.png>) 
+![doc reference](<Screenshot 2026-07-13 at 10.15.27 PM.png>)
