@@ -125,3 +125,46 @@ The agent will automatically trigger its file search tool, scan the uploaded doc
 At the end of the generated answer, the agent will list the specific source citations (e.g., PDF page numbers or document names) where it found the supporting information:
 ![generated-content](<Screenshot 2026-07-13 at 10.15.16 PM.png>) 
 ![doc reference](<Screenshot 2026-07-13 at 10.15.27 PM.png>)
+
+Debbugging agents with Traces like shown below..
+![traces](<Screenshot 2026-07-13 at 11.38.40 PM.png>) 
+![traces-details](<Screenshot 2026-07-13 at 11.39.41 PM.png>)
+
+Knowledge check:
+README.md:
+🤖 Prompt Engineering & Agent Contracts
+In this project, prompts are treated as strict execution contracts rather than open-ended instructions. We structure our system prompts in Microsoft Foundry around three core design principles to guarantee predictable, production-grade behavior.
+The 3 Rules of Our Agent Contracts
+	1.	Rigid Role Clarity: No vague personas. Every agent has a strict boundary and explicit routing rules.
+•	Example: If a user mentions billing, route to the Billing Agent; never attempt to troubleshoot directly.
+	2.	Hard Grounding Boundaries: Agents are forbidden from using general knowledge (parametric memory).
+•	Example: If the required information is missing from the search tool (Foundry IQ), the agent must reply "Information unavailable" instead of guessing.
+	3.	Explicit Tool Protocols: Tool calls are strictly gated by clear conditions to prevent unnecessary API latency.
+•	Example: The agent must invoke the file_search tool first only if the query mentions maintenance or warning codes.
+🔍 Debugging & Trace Enforcement
+Because agentic workflows can be unpredictable, we do not rely solely on end-output validation.
+We use Microsoft Foundry’s Agent Tracing (integrated with Application Insights and OpenTelemetry) to audit our contracts.
+How to debug execution paths:
+•	Trace Trajectories: View the step-by-step handoff between agents and tools.
+•	Inspect Inputs/Outputs: Verify the exact parameters passed to tools and the raw data returned.
+•	Identify Contract Breaches: Pinpoint exactly where an agent deviated from its routing logic or tool protocol.
+
+Memory in Foundry:
+Memory in foundry is a managed, long term memory system. Memory is persistent to design and not for single chat/thread.
+
+Memory vs Context Window:
+Model context window is temporary and stay with that chat discussion alone but memory is long term. We have 2 types of memories,
+Short-term memory: Current session's conversation context
+Long-term memory: Distilled knowledge that persists across sessions
+Foundry focuses on long term memory.
+
+Memory types in foundry:
+1. User profile memory - stores relative information about user like name, email, contact numbers etc
+2. Chat summary memory - allows agent to continue discussion without repeating earlier context information, example this chat summary memory will make agent to remember your previous complaint number, ticket details, past resolutions etc.
+
+To enable memory in foundry, you must go to memory section and deploy embedding model like text-embedding-3-large model in our project. First click on Add and select create custom memory store and choose model and click on create. After this deployment, in memory store section it will show a memory store name automatically which means memory is created and hence click on save. Pls go through the below screenshots for steps.
+![memory](<Screenshot 2026-07-14 at 1.50.18 PM.png>) 
+![memory-1](<Screenshot 2026-07-14 at 1.50.25 PM.png>) 
+![memory-2](<Screenshot 2026-07-14 at 1.50.48 PM.png>) 
+![memory-3](<Screenshot 2026-07-14 at 1.51.03 PM.png>)
+
