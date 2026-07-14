@@ -149,7 +149,7 @@ How to debug execution paths:
 •	Inspect Inputs/Outputs: Verify the exact parameters passed to tools and the raw data returned.
 •	Identify Contract Breaches: Pinpoint exactly where an agent deviated from its routing logic or tool protocol.
 
-Memory in Foundry:
+## Memory in Foundry:
 Memory in foundry is a managed, long term memory system. Memory is persistent to design and not for single chat/thread.
 
 Memory vs Context Window:
@@ -168,7 +168,7 @@ To enable memory in foundry, you must go to memory section and deploy embedding 
 ![memory-2](<Screenshot 2026-07-14 at 1.50.48 PM.png>) 
 ![memory-3](<Screenshot 2026-07-14 at 1.51.03 PM.png>)
 
-Knowledge:
+## Knowledge:
 Usually knowledge section will be configured by using Foundry IQ which works like a smart agent for enterprise level searching across all databases, files etc. Configuring knowledge steps as follows..
 ![knowledge](<Screenshot 2026-07-14 at 2.53.33 PM.png>) 
 ![knowledge-1](<Screenshot 2026-07-14 at 2.53.43 PM.png>) 
@@ -178,7 +178,7 @@ Usually knowledge section will be configured by using Foundry IQ which works lik
 However our project has only a small agent and this is not enterprise grade project and do not need to configure Foundry IQ and already configured file search tool and some grounding rules in instructions will give enough knowledge to our agent.
 
 Hence updating instructions with following prompt..
-
+## New Grounding rules prompt:
 ```
 
 
@@ -230,6 +230,66 @@ Now i have asked a question like "what information does the vehicle's EDR collec
 Now when we ask some irrelevant question like "When MAC new operating system release in september 2026?" then see how agent responded in below screenshot.
 ![customer-agent-response-2](<Screenshot 2026-07-14 at 3.59.39 PM.png>)
 
+## Guardrails(Enterprise safety) in Foundry:
+Building safe, enterprise grading agent using guardrails.
+Why guardrails matter in production?
+Attacks on agents: Prompt injection, jailbreak attempts, abusive or unsafe user input, requests for protected or disallowed content
+
+Microsoft treats guardrails as a first-class, system-level safety feature in Foundry.
+
+In Foundry, guardrails are implemented through content filtering and risk controls, powered by Azure AI Content Safety. They work by scanning both user inputs(prompts) and model output(responses).
+
+Pls see how we configure guardrails in general with following screenshots..
+![guardrails](<Screenshot 2026-07-14 at 4.13.31 PM.png>) 
+Reassigning guardrail:
+![guardrails-2](<Screenshot 2026-07-14 at 4.13.43 PM.png>) 
+By default microsoft v2 provides some safety standards to both user inputs and outputs(responses) with severity like medium blocking, high etc.
+![guardrails-3](<Screenshot 2026-07-14 at 4.20.01 PM.png>) 
+![guardrails-4](<Screenshot 2026-07-14 at 4.20.16 PM.png>)
+
+## What are Guardrails?
+Guardrails are safety mechanisms and policy controls designed to keep AI applications safe and aligned with responsible AI guidelines. As seen in the image's table, they work by scanning content at specific intervention points (such as user inputs or AI-generated outputs) and executing an action (like Block) if the content crosses a dangerous severity threshold.
+
+#### Microsoft.DefaultV2 (Default Guardrails)
+Microsoft.DefaultV2 is the out-of-the-box, standard safety policy applied to AI models and agents in Microsoft's ecosystem (such as Azure AI Foundry / OpenAI).
+•	By default, it automatically screens for four main risk categories: Hate, Self-harm, Sexual, and Violence.
+•	It blocks any content that scores at a Medium or high severity level on both incoming prompts (user input) and outgoing completions (output).
+
+##  Reassigning Guardrails
+The Assign button at the bottom allows you to apply this specific safety template to your active AI models or automated agents. Reassigning guardrails means shifting a model or agent from a custom safety filter back to this default Microsoft.DefaultV2 standard (or vice versa) to adjust how strictly or loosely the AI filters content.
+
+## 🛡️ AI Agent Guardrails
+
+### Why We Create Custom Guardrails
+While default policies (like `Microsoft.DefaultV2`) provide baseline safety, production and enterprise-level agents require tailored custom guardrails for several reasons:
+
+* **Preventing Jailbreaks & Prompt Injections:** Standard filters might miss adversarial prompts designed to trick the agent. Custom rules block jailbreak attempts at the user-input stage.
+* **Protecting Intellectual Property:** Enterprise agents must be restricted from outputting protected materials (such as copyrighted code or proprietary text).
+* **Preventing Data Leakage:** Custom policies ensure Personally Identifiable Information (PII)—like API keys, emails, or phone numbers—is not leaked during user queries or third-party tool calls.
+* **Task Adherence (Task Drift):** Ensures the agent strictly stays on its assigned role (e.g., customer support) and blocks attempts to make it perform unauthorized tasks (like writing python code or discussing unrelated topics).
+Creating custom guardrails steps:
+![create-guardrails](<Screenshot 2026-07-14 at 4.34.44 PM.png>) 
+![create-guardrails](<Screenshot 2026-07-14 at 4.34.56 PM.png>) 
+![create-guardrails](<Screenshot 2026-07-14 at 4.35.04 PM.png>) 
+![create-guardrails](<Screenshot 2026-07-14 at 4.36.33 PM.png>) 
+![create-guardrails](<Screenshot 2026-07-14 at 4.36.55 PM.png>)
+---
+
+### How to Configure Guardrails for Enterprise Agents
+
+To configure safety controls for our production agents, follow the 3-step wizard in the AI Foundry:
+
+#### 1. Add Controls (Define Risk Thresholds)
+* **Jailbreaks:** Set to **Block** at the `User input` intervention point to catch malicious intent before processing.
+* **Content Harms:** Configure sliders for **Hate, Sexual, Self-harm, and Violence** (typically set to **Medium blocking** for enterprise safety).
+* **Protected Materials:** Set both text and code protection to **Block** at the `Output` stage to prevent copyright infringement.
+* **Sensitive Data (PII):** Enable PII detection to monitor both `User input` and `Tool calls` to prevent API key or credential leakage.
+
+#### 2. Select Agents and Models
+* Avoid applying broad policies globally. Instead, **target specific agents** (e.g., assigning this guardrail policy directly to `customer-support-agent (v9)`).
+
+#### 3. Review & Deploy
+* Name your guardrail clearly (e.g., `Guardrails174`), verify the active intervention points, and click **Create** to deploy.
 
 Important notes:
 Tools = actions
@@ -237,9 +297,10 @@ Memory = recall
 Knowledge = truth
 Guardrails = boundaries
 
-Knowledge vs Guardrails?
+Knowledge vs Grounding vs Guardrails?
 Knowledge = Where does the agent get its facts from?
-Guardrails = What is the agent allowed to say or do?
+Grounding = Where does the truth comes from?
+Guardrails = What is the agent allowed to say or do or generate?
 
 1. File Search Tools (Standard RAG)
 •	What it is: A basic lookup tool where you manually upload a few documents (like PDFs or Word files) directly to a single agent.
