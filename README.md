@@ -116,7 +116,7 @@ RAG = external knowledge + LLM reasoning = more accurate, up-to-date, source-gro
 
 Note: Read the instructions now to understand what inputs we provided to system on user inputs, verify RAG(file data) etc.
 
-How to Use RAG (File Search) & Citations
+#### How to Use RAG (File Search) & Citations
 The agent is equipped with Retrieval-Augmented Generation (RAG) capabilities, allowing it to search uploaded reference documents (such as manuals or FAQs) to answer specific user queries.
 Example Interaction
 If you ask the agent a document-specific question:
@@ -126,7 +126,7 @@ At the end of the generated answer, the agent will list the specific source cita
 ![generated-content](<Screenshot 2026-07-13 at 10.15.16 PM.png>) 
 ![doc reference](<Screenshot 2026-07-13 at 10.15.27 PM.png>)
 
-Debbugging agents with Traces like shown below..
+#### Debbugging agents with Traces like shown below..
 ![traces](<Screenshot 2026-07-13 at 11.38.40 PM.png>) 
 ![traces-details](<Screenshot 2026-07-13 at 11.39.41 PM.png>)
 
@@ -291,7 +291,7 @@ To configure safety controls for our production agents, follow the 3-step wizard
 #### 3. Review & Deploy
 * Name your guardrail clearly (e.g., `Guardrails174`), verify the active intervention points, and click **Create** to deploy.
 
-Important notes:
+## Important notes:
 Tools = actions
 Memory = recall
 Knowledge = truth
