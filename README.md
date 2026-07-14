@@ -79,6 +79,9 @@ Running the Project
 Run the agent script directly using uv. This command handles virtual environment activation and dependency management seamlessly in one step:
 `uv run support-agent.py`
 
+running streamlit app to view the screen running this customer support agent
+`uv run streamlit run main.py`
+
 So far we build an agent in microsoft foundry and called same agent from python code.
 
 Tool calling in microsoft foundry:
