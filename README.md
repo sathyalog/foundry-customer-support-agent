@@ -168,3 +168,91 @@ To enable memory in foundry, you must go to memory section and deploy embedding 
 ![memory-2](<Screenshot 2026-07-14 at 1.50.48 PM.png>) 
 ![memory-3](<Screenshot 2026-07-14 at 1.51.03 PM.png>)
 
+Knowledge:
+Usually knowledge section will be configured by using Foundry IQ which works like a smart agent for enterprise level searching across all databases, files etc. Configuring knowledge steps as follows..
+![knowledge](<Screenshot 2026-07-14 at 2.53.33 PM.png>) 
+![knowledge-1](<Screenshot 2026-07-14 at 2.53.43 PM.png>) 
+![knowledge-2](<Screenshot 2026-07-14 at 2.53.57 PM.png>) 
+![knowledge-3](<Screenshot 2026-07-14 at 2.54.14 PM.png>)
+
+However our project has only a small agent and this is not enterprise grade project and do not need to configure Foundry IQ and already configured file search tool and some grounding rules in instructions will give enough knowledge to our agent.
+
+Hence updating instructions with following prompt..
+
+```
+
+
+You are a professional customer support assistant operating in a strictly grounded environment.
+You MUST use the File Search tool as the sole and authoritative source of information to answer ALL user questions.
+You MUST NEVER answer from your own general knowledge, prior training data, assumptions, or reasoning under any circumstances.
+
+Your responsibilities are strictly limited to:
+1. Understanding the user’s request
+2. Retrieving relevant information exclusively via the File Search tool
+3. Producing a clear, polite, and professional response based only on retrieved content
+
+GROUNDING RULES (STRICT)
+- The File Search tool is the ONLY source of truth
+- If the required information is not found via File Search, you MUST respond exactly with:
+  "I don’t have that information in the available documentation."
+- You MUST NOT infer, extrapolate, summarize beyond the retrieved text, or combine it with any external knowledge
+
+CITATION REQUIREMENTS (MANDATORY)
+EVERY factual statement in the response MUST be supported by citations returned by the File Search tool.
+
+You MUST NOT:
+- Provide uncited statements
+- Mix cited and uncited content
+- Cite sources not returned by the File Search tool
+
+OUTPUT FORMAT (STRICT)
+Always respond in plain text using this structure:
+Internal summary:
+<One to two neutral sentences summarizing the customer’s request>
+Draft reply:
+<A customer-facing response, three to six sentences maximum, fully grounded and fully cited>
+
+FAILURE CONDITIONS
+If:
+- No relevant documentation is retrieved, OR
+- The user’s request is outside the scope of the retrieved documentation
+Then:
+- Respond exactly with:
+  "I don’t have that information in the available documentation."
+
+
+```
+Pls check above Grounding rules and the last line in the prompt keenly..
+
+Now i have asked a question like "what information does the vehicle's EDR collect?" where my agent responded with relevant information retrieved from the DOC we uploaded(RAG - file search tool). Pls find the below screenshot.
+
+![customer-agent-response](<Screenshot 2026-07-14 at 3.58.43 PM.png>) 
+Now when we ask some irrelevant question like "When MAC new operating system release in september 2026?" then see how agent responded in below screenshot.
+![customer-agent-response-2](<Screenshot 2026-07-14 at 3.59.39 PM.png>)
+
+
+Important notes:
+Tools = actions
+Memory = recall
+Knowledge = truth
+Guardrails = boundaries
+
+Knowledge vs Guardrails?
+Knowledge = Where does the agent get its facts from?
+Guardrails = What is the agent allowed to say or do?
+
+1. File Search Tools (Standard RAG)
+•	What it is: A basic lookup tool where you manually upload a few documents (like PDFs or Word files) directly to a single agent.
+•	How to think of it: Like using CTRL+F on a specific folder.
+•	Best for: Small-scale, isolated tasks where one agent just needs to read a few specific files.
+2. Foundry IQ (Unified Knowledge Layer)
+•	What it is: An enterprise-grade, "smart" retrieval engine that connects to all your company's data sources (SharePoint, Azure, OneLake, Web) at once.
+•	How to think of it: Like a Highly Coordinated Research Team. When asked a question, it breaks it down, searches multiple databases in parallel, merges the results, and automatically respects user permissions.
+•	Best for: Large-scale, reusable company knowledge bases that multiple agents need to securely search.
+3. Grounding Rules (Agent Instructions)
+•	What it is: The core rules, logic, and behavioral boundaries written directly into the agent's system prompt (its "brain").
+•	How to think of it: Like the Company Code of Conduct. It's not a document to search; it is a set of active laws the agent must memorize and obey in every single conversation.
+•	Best for: Controlling how the agent behaves, setting safety boundaries, defining its persona, and enforcing workflow steps (e.g., "Never mention competitor prices," "Always be polite").
+
+
+
