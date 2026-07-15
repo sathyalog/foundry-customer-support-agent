@@ -1,8 +1,12 @@
 # Customer Support Agent
 This project leverages the Azure AI Foundry SDK to connect to a custom Customer Support Agent that assists human agents by providing concise summaries of customer issues and drafting polite, professional responses.
+
 First lets understand the difference between AI Agent & AI Workflow. 
-AI Workflow - strcutured, predefined sequence of steps.
-AI Agent - decision-making system.
+
+**AI Workflow** - strcutured, predefined sequence of steps.
+
+**AI Agent** - decision-making system.
+
 ### Prerequisites
 • uv installed on your system.
 • An active Azure Subscription with access to Azure AI Foundry (ai.azure.com).
